@@ -52,7 +52,7 @@ useEffect(() => {
 const fetchProducts = async () => {
   try {
     const res = await axios.get(
-      "http://localhost:5000/api/products"
+      "http://shopeasy-backend-8tjr.onrender.com/api/products"
     );
 
     setProducts(res.data);
@@ -88,7 +88,7 @@ const fetchProducts = async () => {
   try {
 
     await axios.put(
-      `http://localhost:5000/api/products/${editingId}`,
+       `https://shopeasy-backend-8tjr.onrender.com/api/products/${editingId}`,
       {
         name,
         price,
@@ -119,7 +119,7 @@ const fetchProducts = async () => {
 
     try {
   await axios.post(
-    "http://localhost:5000/api/products",
+    "http://shopeasy-backend-8tjr.onrender.com/api/products",
     {
       name,
       price,
@@ -180,7 +180,7 @@ const fetchProducts = async () => {
   try {
 
     await axios.delete(
-      `http://localhost:5000/api/products/${id}`
+       `https://shopeasy-backend-8tjr.onrender.com/api/products/${id}`
     );
 
     fetchProducts();
