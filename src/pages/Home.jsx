@@ -1,8 +1,9 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 import ProductCard from "../components/ProductCard";
-
 import products from "../data/products";
+
 
 function Home(props) {
 
@@ -20,60 +21,52 @@ function Home(props) {
 
   useEffect(() => {
 
-    const savedProducts =
+  fetchProducts();
 
-      localStorage.getItem(
-        "adminProducts"
-      );
+}, []);
 
-    if (savedProducts) {
+const fetchProducts = async () => {
 
-      setAdminProducts(
+  try {
 
-        JSON.parse(
-          savedProducts
-        )
+    const res = await axios.get(
+      "https:https:shopeasy-backend-8tjr.onrender.com/api/products"
+    );
 
-      );
+    setAdminProducts(res.data);
 
-    }
+  } catch (error) {
 
-  }, []);
+    console.log(error);
+
+  }
+
+};
 
   useEffect(() => {
 
-  console.log(
-    "Admin Products:",
-    adminProducts
-  );
-
 }, [adminProducts]);
 
-  const categories = [
+const allProducts = [
+  ...products,
+  ...adminProducts,
+];
 
-    "All",
-    "Shoes",
-    "Electronics",
-    "Audio",
-    "Fashion",
-    "Gaming",
+const categories = [
 
-  ];
+  "All",
 
-  const allProducts = [
+  ...new Set(
 
-    ...products,
+    allProducts.map(
+      (product) => product.category
+    )
 
-    ...adminProducts,
+  ),
 
-  ];
-  console.log(
-  "All Products:",
-  allProducts
-);
+];
 
-  const suggestions =
-
+const suggestions =
     allProducts.filter((product) =>
 
       product.name
@@ -194,7 +187,7 @@ function Home(props) {
 
         <div
 
-          key={product.id}
+          key={product._id || product.id}
 
           style={styles.suggestionItem}
 
@@ -254,7 +247,7 @@ function Home(props) {
 
           <ProductCard
 
-            key={product.id}
+           key={product._id || product.id}
 
             product={product}
 
@@ -269,7 +262,8 @@ function Home(props) {
             isWishlisted={
               props.wishlistItems?.some(
                 (item) =>
-                  item.id === product.id
+                  (item._id || item.id) ===
+                  (product._id || product.id)
               )
             }
 

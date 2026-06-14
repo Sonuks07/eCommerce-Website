@@ -1,75 +1,84 @@
-import { useParams } from "react-router-dom";
-
-import { useNavigate } from "react-router-dom";
-
-import products from "../data/products";
-
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 import ReviewSection from "../components/ReviewSection";
 import { useState, useEffect } from "react";
-
+import products from "../data/products";
 
 function ProductDetails(props) {
 
   const navigate = useNavigate();
-
   const { id } = useParams();
-  const [adminProducts, setAdminProducts] =
-  useState([]);
 
-useEffect(() => {
+  const [product, setProduct] =
+    useState(null);
 
-  const savedProducts =
+  useEffect(() => {
 
-    localStorage.getItem(
-      "adminProducts"
-    );
+    const fetchProduct = async () => {
 
-  if (savedProducts) {
+      try {
 
-    setAdminProducts(
+        const res = await axios.get(
+          "http://localhost:5000/api/products"
+        );
 
-      JSON.parse(
-        savedProducts
-      )
+        const foundMongoProduct =
+          res.data.find(
+            (item) =>
+              String(item._id) === String(id)
+          );
 
-    );
+        if (foundMongoProduct) {
 
-  }
+          setProduct(foundMongoProduct);
+          return;
 
-}, []);
+        }
 
-  const allProducts = [
+        const foundLocalProduct =
+          products.find(
+            (item) =>
+              String(item.id) === String(id)
+          );
 
-  ...products,
+        setProduct(foundLocalProduct);
 
-  ...adminProducts,
+      } catch (error) {
 
-];
+        console.log(error);
 
-const product =
+        const foundLocalProduct =
+          products.find(
+            (item) =>
+              String(item.id) === String(id)
+          );
 
-  allProducts.find(
+        setProduct(foundLocalProduct);
 
-    (item) =>
+      }
 
-      item.id === Number(id)
+    };
 
-  );
+    fetchProduct();
+
+  }, [id]);
+
   if (!product) {
 
-    return <h1>Product Not Found</h1>;
+    return (
+      <div style={{ padding: "40px" }}>
+        <h1>Product Not Found</h1>
+      </div>
+    );
 
   }
 
-  
   return (
 
     <div style={styles.container}>
 
       <button
-
         style={styles.backButton}
-
         onClick={() => navigate(-1)}
       >
         ← Back
@@ -80,7 +89,6 @@ const product =
         <img
           src={product.image}
           alt={product.name}
-
           style={styles.image}
         />
 
@@ -91,7 +99,7 @@ const product =
           </h1>
 
           <h2 style={styles.price}>
-            ${product.price}
+            ₹{product.price}
           </h2>
 
           <h3 style={styles.category}>
@@ -99,32 +107,29 @@ const product =
           </h3>
 
           <div
-  style={{
-    background: "#f5f5f5",
-    padding: "15px",
-    borderRadius: "10px",
-    marginTop: "20px",
-  }}
->
-  <h3>
-    Description
-  </h3>
+            style={{
+              background: "#f5f5f5",
+              padding: "15px",
+              borderRadius: "10px",
+              marginTop: "20px",
+            }}
+          >
+            <h3>Description</h3>
 
-  <p>
-    {product.description}
-  </p>
-</div>
+            <p>
+              {product.description}
+            </p>
+
+          </div>
 
           <ReviewSection
-  productId={product.id}
-/>
+            productId={product._id || product.id}
+          />
 
           <div style={styles.buttons}>
 
             <button
-
               style={styles.cartButton}
-
               onClick={() =>
                 props.addToCart(product)
               }
@@ -139,95 +144,65 @@ const product =
       </div>
 
     </div>
+
   );
+
 }
 
 const styles = {
 
   container: {
-
     padding: "40px",
   },
 
   backButton: {
-
     padding: "10px 18px",
-
     border: "none",
-
     background: "#111",
-
     color: "white",
-
     borderRadius: "8px",
-
     cursor: "pointer",
-
     marginBottom: "30px",
   },
 
   productSection: {
-
     display: "flex",
-
     gap: "50px",
-
     flexWrap: "wrap",
-
     alignItems: "center",
   },
 
   image: {
-
     width: "450px",
-
     borderRadius: "15px",
   },
 
   details: {
-
     flex: 1,
   },
 
   name: {
-
     fontSize: "42px",
   },
 
   price: {
-
     color: "green",
   },
 
   category: {
-
     color: "gray",
   },
 
-  description: {
-
-    lineHeight: "1.8",
-
-    marginTop: "20px",
-  },
-
   buttons: {
-
     marginTop: "30px",
   },
 
   cartButton: {
-
     padding: "14px 24px",
-
     border: "none",
-
     background: "#111",
-
     color: "white",
-
     borderRadius: "8px",
-
     cursor: "pointer",
   },
 

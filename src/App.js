@@ -8,27 +8,18 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-
 import Navbar from "./components/Navbar";
-
 import Home from "./pages/Home";
-
 import Cart from "./pages/Cart";
-
 import Wishlist from "./pages/Wishlist";
-
 import Login from "./pages/Login";
-
 import Register from "./pages/Register";
-
 import Profile from "./pages/Profile";
-
 import ProductDetails from "./pages/ProductDetails";
-
 import Checkout from "./pages/Checkout";
-
 import Orders from "./pages/Orders";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
 
@@ -871,6 +862,11 @@ const placeOrder = () => {
 <Route
   path="/admin"
   element={<Admin />}
+/>
+
+<Route
+  path="/admin-login"
+  element={<AdminLogin />}
 />
 
 </Routes>

@@ -20,7 +20,7 @@ const handlePlaceOrder = () => {
     "Order placed successfully!"
   );
 
-  navigate("/");
+  navigate("/orders");
 };
   return (
 

@@ -19,11 +19,14 @@ function ProductCard({
 const [reviewCount, setReviewCount] =
   useState(0);
 
+const productId =
+  product._id || product.id;
+
 useEffect(() => {
 
   const savedReviews =
     localStorage.getItem(
-      `reviews_${product.id}`
+      `reviews_${productId}`
     );
 
   if (savedReviews) {
@@ -38,14 +41,9 @@ useEffect(() => {
     const avg = (
 
       reviews.reduce(
-
         (total, review) =>
-
-          total +
-          review.rating,
-
+          total + review.rating,
         0
-
       ) / reviews.length
 
     ).toFixed(1);
@@ -54,7 +52,7 @@ useEffect(() => {
 
   }
 
-}, [product.id]);
+}, [productId]);
 
   return (
 
@@ -117,7 +115,7 @@ useEffect(() => {
         style={styles.detailsButton}
 
         onClick={() =>
-          navigate(`/product/${product.id}`)
+          navigate(`/product/${product._id || product.id}`)
         }
       >
         View Details

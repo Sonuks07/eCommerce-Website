@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 function Admin() {
+
+  const navigate = useNavigate();
 
   const [products, setProducts] =
     useState([]);
@@ -27,25 +31,37 @@ function Admin() {
     useState(null);
 
   useEffect(() => {
+  fetchProducts();
+}, []);
 
-    const savedProducts =
-      localStorage.getItem(
-        "adminProducts"
-      );
+useEffect(() => {
 
-    if (savedProducts) {
+  const isAdmin =
+    localStorage.getItem(
+      "adminAuth"
+    );
 
-      setProducts(
-        JSON.parse(
-          savedProducts
-        )
-      );
+  if (!isAdmin) {
 
-    }
+    navigate("/admin-login");
 
-  }, []);
+  }
 
-  const addProduct = () => {
+}, [navigate]);
+
+const fetchProducts = async () => {
+  try {
+    const res = await axios.get(
+      "http://localhost:5000/api/products"
+    );
+
+    setProducts(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+  const addProduct = async () => {
 
     if (
 
@@ -69,107 +85,22 @@ function Admin() {
 
     if (editingId) {
 
-      const updatedProducts =
+  try {
 
-        products.map(
-          (product) =>
-
-            product.id ===
-            editingId
-
-              ? {
-
-                  ...product,
-
-                  name,
-
-                  price,
-
-                  category,
-
-                  description,
-
-                  image:
-                    preview ||
-                    product.image,
-
-                }
-
-              : product
-
-        );
-
-      setProducts(
-        updatedProducts
-      );
-
-      localStorage.setItem(
-
-        "adminProducts",
-
-        JSON.stringify(
-          updatedProducts
-        )
-
-      );
-
-      setEditingId(null);
-
-      setName("");
-      setPrice("");
-      setCategory("");
-      setDescription("");
-      setPreview("");
-
-      alert(
-        "Product Updated"
-      );
-
-      return;
-
-    }
-
-    const newProduct = {
-
-      id: Date.now(),
-
-      name,
-
-      price,
-
-      category,
-
-      image: preview,
-
-      description,
-
-    };
-
-    const updatedProducts = [
-
-      ...products,
-
-      newProduct,
-
-    ];
-
-    setProducts(
-      updatedProducts
+    await axios.put(
+      `http://localhost:5000/api/products/${editingId}`,
+      {
+        name,
+        price,
+        category,
+        image: preview,
+        description,
+      }
     );
 
-    localStorage.setItem(
+    fetchProducts();
 
-      "adminProducts",
-
-      JSON.stringify(
-        updatedProducts
-      )
-
-    );
-
-    alert(
-      "Product Added Successfully"
-    );
+    setEditingId(null);
 
     setName("");
     setPrice("");
@@ -177,6 +108,42 @@ function Admin() {
     setDescription("");
     setPreview("");
 
+    alert("Product Updated");
+
+  } catch (error) {
+    console.log(error);
+  }
+
+  return;
+}
+
+    try {
+  await axios.post(
+    "http://localhost:5000/api/products",
+    {
+      name,
+      price,
+      category,
+      image: preview,
+      description,
+    }
+  );
+
+  fetchProducts();
+
+  alert(
+    "Product Added Successfully"
+  );
+
+  setName("");
+  setPrice("");
+  setCategory("");
+  setDescription("");
+  setPreview("");
+
+} catch (error) {
+  console.log(error);
+}
   };
 
   const editProduct = (
@@ -204,39 +171,24 @@ function Admin() {
     );
 
     setEditingId(
-      product.id
+      product._id
     );
 
   };
 
-  const deleteProduct = (
-    id
-  ) => {
+  const deleteProduct = async (id) => {
+  try {
 
-    const updatedProducts =
-
-      products.filter(
-
-        (product) =>
-          product.id !== id
-
-      );
-
-    setProducts(
-      updatedProducts
+    await axios.delete(
+      `http://localhost:5000/api/products/${id}`
     );
 
-    localStorage.setItem(
+    fetchProducts();
 
-      "adminProducts",
-
-      JSON.stringify(
-        updatedProducts
-      )
-
-    );
-
-  };
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   return (
 
@@ -245,6 +197,28 @@ function Admin() {
       <h1>
         Admin Panel
       </h1>
+      <button
+  onClick={() => {
+
+    localStorage.removeItem(
+      "adminAuth"
+    );
+
+    navigate("/admin-login");
+
+  }}
+  style={{
+    background: "red",
+    color: "white",
+    border: "none",
+    padding: "10px 15px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    marginBottom: "20px",
+  }}
+>
+  Logout
+</button>
 
       <h2>
         Total Products:
@@ -474,7 +448,7 @@ function Admin() {
 
           <div
 
-            key={product.id}
+            key={product._id}
 
             style={{
               border:
@@ -551,7 +525,7 @@ function Admin() {
 
               onClick={() =>
                 deleteProduct(
-                  product.id
+                  product._id
                 )
               }
 

@@ -122,6 +122,15 @@ function Navbar(props) {
           </Link>
         </li>
 
+        <li>
+  <Link
+    to="/admin"
+    style={styles.link}
+  >
+    Admin
+  </Link>
+</li>
+
         {/* USER NAME */}
         {props.currentUser && (
 
@@ -174,15 +183,6 @@ function Navbar(props) {
                 Register
               </Link>
             </li>
-
-            <li>
-  <Link
-    to="/admin"
-    style={styles.link}
-  >
-    Admin
-  </Link>
-</li>
 
           </>
 
