@@ -52,7 +52,7 @@ useEffect(() => {
 const fetchProducts = async () => {
   try {
     const res = await axios.get(
-      "http://shopeasy-backend-8tjr.onrender.com/api/products"
+      "https://shopeasy-backend-8tjr.onrender.com/api/products"
     );
 
     setProducts(res.data);
@@ -119,7 +119,7 @@ const fetchProducts = async () => {
 
     try {
   await axios.post(
-    "http://shopeasy-backend-8tjr.onrender.com/api/products",
+    "https://shopeasy-backend-8tjr.onrender.com/api/products",
     {
       name,
       price,

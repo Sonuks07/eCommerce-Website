@@ -21,61 +21,56 @@ function Home(props) {
 
   useEffect(() => {
 
-  fetchProducts();
+    fetchProducts();
 
-}, []);
+  }, []);
 
-const fetchProducts = async () => {
+  const fetchProducts = async () => {
 
-  try {
+    try {
 
-    const res = await axios.get(
-      "https:https:shopeasy-backend-8tjr.onrender.com/api/products"
-    );
+      const res = await axios.get(
+        "https:https:shopeasy-backend-8tjr.onrender.com/api/products"
+      );
 
-    setAdminProducts(res.data);
+      setAdminProducts(res.data);
 
-  } catch (error) {
+    } catch (error) {
 
-    console.log(error);
+      console.log(error);
 
-  }
+    }
 
-};
+  };
 
   useEffect(() => {
 
-}, [adminProducts]);
+  }, [adminProducts]);
 
-const allProducts = [
-  ...products,
-  ...adminProducts,
-];
+  const allProducts = [
+    ...products,
+    ...adminProducts,
+  ];
 
-const categories = [
+  const categories = [
 
-  "All",
+    "All",
 
-  ...new Set(
+    ...new Set(
 
-    allProducts.map(
-      (product) => product.category
-    )
+      allProducts.map(
+        (product) => product.category
+      )
 
-  ),
+    ),
 
-];
+  ];
 
-const suggestions =
-    allProducts.filter((product) =>
-
-      product.name
-        .toLowerCase()
-        .includes(
-          searchTerm.toLowerCase()
-        )
-
-    );
+  const suggestions = allProducts.filter((product) =>
+    product?.name
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   const filteredProducts =
     allProducts.filter((product) => {
@@ -87,12 +82,9 @@ const suggestions =
         product.category === selectedCategory;
 
       const matchesSearch =
-
-        product.name
-          .toLowerCase()
-          .includes(
-            searchTerm.toLowerCase()
-          );
+        product?.name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
       return (
         matchesCategory &&
@@ -179,34 +171,34 @@ const suggestions =
 
       {searchTerm && (
 
-  <div style={styles.suggestions}>
+        <div style={styles.suggestions}>
 
-    {suggestions
-      .slice(0, 5)
-      .map((product) => (
+          {suggestions
+            .slice(0, 5)
+            .map((product) => (
 
-        <div
+              <div
 
-          key={product._id || product.id}
+                key={product._id || product.id}
 
-          style={styles.suggestionItem}
+                style={styles.suggestionItem}
 
-          onClick={() =>
-            setSearchTerm(
-              product.name
-            )
-          }
-        >
+                onClick={() =>
+                  setSearchTerm(
+                    product.name
+                  )
+                }
+              >
 
-          {product.name}
+                {product.name}
+
+              </div>
+
+            ))}
 
         </div>
 
-      ))}
-
-  </div>
-
-)}
+      )}
 
       <select
 
@@ -247,7 +239,7 @@ const suggestions =
 
           <ProductCard
 
-           key={product._id || product.id}
+            key={product._id || product.id}
 
             product={product}
 
@@ -355,27 +347,27 @@ const styles = {
 
   suggestions: {
 
-  background: "white",
+    background: "white",
 
-  borderRadius: "8px",
+    borderRadius: "8px",
 
-  marginBottom: "20px",
+    marginBottom: "20px",
 
-  boxShadow:
-    "0 0 10px rgba(0,0,0,0.1)",
+    boxShadow:
+      "0 0 10px rgba(0,0,0,0.1)",
 
-},
+  },
 
-suggestionItem: {
+  suggestionItem: {
 
-  padding: "10px",
+    padding: "10px",
 
-  cursor: "pointer",
+    cursor: "pointer",
 
-  borderBottom:
-    "1px solid #eee",
+    borderBottom:
+      "1px solid #eee",
 
-},
+  },
 
 };
 
